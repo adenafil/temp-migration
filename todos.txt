@@ -1,0 +1,25 @@
+# TODO :
+the following text is what i have to do in my project;
+- API (DONE);
+- Test API(DONE);
+- Design GUI(Ongoing);
+- DESIGN LOGIN USER, SIGN UP, FORGET Password (ONGOING);
+- FIX table search to be JScrollpane tomorrow (DONE);
+- Add default value on date (DONE)
+- add not null in query database and do unit test in code "with gui" and non-gui (still ongoing);
+- Design a database (ONGOING);
+- Make a database (ONGOING):
+- Handle database user_animelist in entity(DONE)
+- add constraint check on table user_animelist(DONE)
+- Write Some Unit Test For Entity And Database(ONGOING)
+- when login or signup succeed then switch to home and
+  adding up some JOptionPane(ONGOING);
+- add profile path in database(ONGOING);
+- handling error null exception (ONGOING);
+- add slides right and left(ONGOING)
+- Handling error connection and status 502 on api server
+
+
+// notes
+- solution for database which you wanted to take notes what user have add in anime database, you can use unique id by API reference.
+- unique key terpisah dan jadi satu memiliki efek yang berbeda
