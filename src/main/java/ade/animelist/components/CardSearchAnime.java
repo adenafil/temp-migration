@@ -11,6 +11,9 @@ import java.text.AttributedCharacterIterator;
 
 public class CardSearchAnime {
     private int indexAddUpAnime;
+
+    public AnimePage animePage = new AnimePage();
+
     JPanel cardPanel;
     private final int CARD_WIDTH = 300;
     private final int CARD_HEIGHT = 400;
@@ -111,7 +114,6 @@ public class CardSearchAnime {
             normalY += 300;
         }
 
-        AnimePage animePage = new AnimePage();
 
         card.addMouseListener(
                 new MouseAdapter() {

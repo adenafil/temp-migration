@@ -11,6 +11,8 @@ import java.awt.event.MouseEvent;
 
 public class CardRecomendationAnime {
     JPanel cardPanel;
+
+    AnimePage animePage = new AnimePage();
     private static final int CARD_WIDTH = 300;
     private static final int CARD_HEIGHT = 400;
     private static int[] x = {0, 350, 700, 1050, 1400};
@@ -149,8 +151,6 @@ public class CardRecomendationAnime {
             index = 0;
             normalY += 300;
         }
-
-        AnimePage animePage = new AnimePage();
 
         card.addMouseListener(
                 new MouseAdapter() {

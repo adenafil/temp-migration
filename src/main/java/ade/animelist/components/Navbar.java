@@ -77,6 +77,42 @@ public class Navbar extends JFrame {
         dashboard.setForeground(Color.BLACK);
         dashboard.setBackground(Color.ORANGE);
 
+        dashboard.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                if (cardTopAnime != null && cardRecomendationAnime != null) {
+                    bingung = 3939;
+                    cardTopAnime.removePanel();
+                    cardRecomendationAnime.removePanel();
+
+                    removeTopCardComponent();
+                    removeRecomdendationCardComponent();
+                }
+
+                if (searchAnimeDiv != null) {
+                    removeSearchAnimeCard();
+                }
+
+                if (cardTopAnime.animePage != null) {
+                    cardTopAnime.animePage.removeContainer();
+                }
+
+                if (cardRecomendationAnime.animePage != null) {
+                    cardRecomendationAnime.animePage.removeContainer();
+                }
+
+                if (cardSearchAnime.animePage != null) {
+                    cardSearchAnime.animePage.removeContainer();
+                }
+
+
+
+                Controller.addComponent(Dashboard.getDashboard());
+
+            }
+        });
+
 
         // Listener
         cardRecomendationAnime.refresh.addMouseListener(new MouseAdapter() {
@@ -125,6 +161,15 @@ public class Navbar extends JFrame {
                     bingung = 0;
                 }
 
+                if (bingung == 3939) {
+                    addTopCardAnime();
+                    addRecomendationAnime();
+                    System.out.println("Mmaamma huthuthuthut");
+                    Dashboard.dashboardDiv.removeAll();
+                    Controller.removeComponent(Dashboard.dashboardDiv);
+                    bingung = 0;
+                }
+
             }
         });
 
@@ -142,6 +187,13 @@ public class Navbar extends JFrame {
                 removeTopCardComponent();
                 removeRecomdendationCardComponent();
             }
+
+            if (Dashboard.dashboardDiv != null) {
+                Dashboard.dashboardDiv.removeAll();
+                Controller.removeComponent(Dashboard.dashboardDiv);
+                bingung = 0;
+
+            }
 //            cardSearchAnime = new CardSearchAnime();
 //            Controller.addComponent(cardSearchAnime.getCard());
             if (e.getSource() == search ) {
@@ -149,30 +201,6 @@ public class Navbar extends JFrame {
                 cardSearchAnime.setIndex(0);
                 System.out.println(search.getText());
                 setSearchByUser(search.getText());
-
-                // sementara
-
-//                try {
-//                    Collection<Anime> anime = JikanAPI.getTitleAndImageAnimeBySearch(getSearchByUser());
-//                    ImageLoaderWorker imageLoaderWorker = new ImageLoaderWorker(anime);
-//                    imageLoaderWorker.execute();
-//
-////                    anime.forEach(ade -> {
-////                        anime.parallelStream().forEach(adebayor -> ImageRenderer.createImageIconByUrl(adebayor.images.getJpg().largeImageUrl));
-////                        ImageRenderer.createImageIconByUrl(ade.images.getJpg().largeImageUrl);
-////                    });
-//
-//                        anime.parallelStream().forEach(ade -> addAnime(ade.title, ResizeImageIcon.setImageIconSize(ImageRenderer.createImageIconByURL(ade.images.getJpg().largeImageUrl), 450, 450)));
-//
-////                    for (Anime data : anime) {
-//////                        ImageRenderer.createImageIconByUrl(data.images.getJpg().largeImageUrl);
-////                        addAnime(data.title, ResizeImageIcon.setImageIconSize(ImageRenderer.createImageIconByURL(data.images.getJpg().largeImageUrl), 450, 450));
-////                    }
-//
-//
-//                } catch (JikanQueryException ex) {
-//                    throw new RuntimeException(ex);
-//                }
 
                 try {
                     JikanAPI.getTitleAndImageAnimeBySearchAsync(search.getText())
