@@ -19,6 +19,8 @@ import java.util.Collection;
 
 
 public class Navbar extends JFrame {
+    JLabel logo;
+    JTextField search;
     private String searchByUser;
     private CardSearchAnime cardSearchAnime = new CardSearchAnime();
     private CardTopAnime cardTopAnime = new CardTopAnime();
@@ -50,7 +52,7 @@ public class Navbar extends JFrame {
 //        setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
         // Component Logo
-        JLabel logo = new JLabel("ADEANIMELIST");
+        logo = new JLabel("ADEANIMELIST");
         logo.setOpaque(true);
 //        logo.setPreferredSize(new Dimension(200, 200));
 //        logo.setLayout(null);
@@ -61,7 +63,7 @@ public class Navbar extends JFrame {
 
         // Component JTextField
 
-        JTextField search = new JTextField();
+        search = new JTextField();
 //        search.setBounds(500, 0, 1000, 40);
         search.setPreferredSize(new Dimension(500, 40));
         search.setText("Cari anime...");
@@ -108,8 +110,16 @@ public class Navbar extends JFrame {
                     addRecomendationAnime();
                 }
 
-                if (bingung != 0) {
+                if (bingung < 100) {
                     removeSearchAnimeCard();
+                    addTopCardAnime();
+                    addRecomendationAnime();
+                    bingung = 0;
+                }
+
+                // ini untuk adding up
+                if (bingung == 999) {
+                    System.out.println("hiihihj");
                     addTopCardAnime();
                     addRecomendationAnime();
                     bingung = 0;
@@ -125,11 +135,13 @@ public class Navbar extends JFrame {
             bingung++;
             addSearchAnimeCard();
 
-            cardTopAnime.removePanel();
-            cardRecomendationAnime.removePanel();
+            if (cardTopAnime != null && cardRecomendationAnime != null) {
+                cardTopAnime.removePanel();
+                cardRecomendationAnime.removePanel();
 
-            removeTopCardComponent();
-            removeRecomdendationCardComponent();
+                removeTopCardComponent();
+                removeRecomdendationCardComponent();
+            }
 //            cardSearchAnime = new CardSearchAnime();
 //            Controller.addComponent(cardSearchAnime.getCard());
             if (e.getSource() == search ) {
@@ -321,5 +333,21 @@ public class Navbar extends JFrame {
         getCardSearch().addCard(title, image, id);
     }
 
+    public JPanel getTopAnime() {
+        return topAnimeDiv;
+    }
+
+    public JPanel getRecomendationAnimeDiv() {
+        return  recomendationAnimeDiv;
+    }
+
+    public void syncDelete() {
+        cardTopAnime.removePanel();
+        cardRecomendationAnime.removePanel();
+
+        removeTopCardComponent();
+        removeRecomdendationCardComponent();
+//
+    }
 
 }

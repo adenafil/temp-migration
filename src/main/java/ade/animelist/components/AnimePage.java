@@ -1,5 +1,11 @@
 package ade.animelist.components;
 
+import ade.animelist.api.JikanAPI;
+import ade.animelist.controller.Controller;
+import ade.animelist.util.ImageRenderer;
+import net.sandrohc.jikan.exception.JikanQueryException;
+import net.sandrohc.jikan.model.anime.Anime;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -9,30 +15,36 @@ public class AnimePage {
     static Navbar navbar = new Navbar();
     static JFrame frame =  new JFrame();
 
-    public static void main(String[] args) {
+    public JPanel contaienrDiv = null;
+
+    public JPanel getAnimePageById(int id) throws JikanQueryException {
+        // anime
+        Anime anime = JikanAPI.getAnimeById(id);
+
         // Jframe
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-        frame.setSize(new Dimension(1920, 1080));
-        frame.getContentPane().setBackground(Color.ORANGE);
-        frame.setResizable(false);
-        frame.add(navbar.getNavbar());
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
+//        frame.setSize(new Dimension(1920, 1080));
+//        frame.getContentPane().setBackground(Color.ORANGE);
+//        frame.setResizable(false);
+//        frame.add(navbar.getNavbar());
 
         // container di bawah navbar
-        JPanel contaienrDiv = new JPanel();
+        contaienrDiv = new JPanel();
         contaienrDiv.setOpaque(true);
         contaienrDiv.setLayout(new BoxLayout(contaienrDiv, BoxLayout.Y_AXIS));
+//        contaienrDiv.setLayout(new FlowLayout(FlowLayout.LEADING, -8, 0));
         contaienrDiv.setPreferredSize(new Dimension(1920, 1000));
-        contaienrDiv.setBackground(Color.GREEN);
+        contaienrDiv.setBackground(Color.decode("#333b48"));
 
         // buat judul
-        JLabel judul = new JLabel("Title : Sousou No Frieren - 2023");
+        JLabel judul = new JLabel(anime.title);
         judul.setOpaque(true);
 //        judul.setPreferredSize(new Dimension(1920, 30));
         judul.setMaximumSize(new Dimension(1920, 30));
-        judul.setBackground(Color.RED);
+        judul.setBackground(Color.decode("#333b48"));
         judul.setForeground(Color.WHITE);
-        judul.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 24));
+        judul.setFont(new Font(Font.MONOSPACED, Font.BOLD, 24));
         judul.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         judul.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -56,39 +68,55 @@ public class AnimePage {
 
         gbcPeringkat.insets = new Insets(10, 10, 10, 10);
 
-        kotakAnimeDesc.add(createKotak("PERINGKAT", "1"), gbcPeringkat);
+        // kotak peringkat
+        kotakAnimeDesc.add(createKotak("PERINGKAT", ""+anime.rank), gbcPeringkat);
 
+        // kotak skor
+        kotakAnimeDesc.add(createKotak("SKOR", "" + anime.score), gbcPeringkat);
 
-        kotakAnimeDesc.add(createKotak("SKOR", "9.12"), gbcPeringkat);
-        kotakAnimeDesc.add(createKotak("RATING", "PG-13 - Teens 13"), gbcPeringkat);
-        kotakAnimeDesc.add(createKotak("TOTAL EPISODES", "28"), gbcPeringkat);
+        // Kotak Rating
+        kotakAnimeDesc.add(createKotak("RATING", "" + anime.rating), gbcPeringkat);
+
+        // Kotak Episodes
+        kotakAnimeDesc.add(createKotak("TOTAL EPISODES", ""+anime.episodes), gbcPeringkat);
 
         // masukan kotak ke conatiner
         contaienrDiv.add(kotakAnimeDesc);
 
+        // container
         JPanel imageAndSynopsis = new JPanel();
         imageAndSynopsis.setLayout(new BoxLayout(imageAndSynopsis, BoxLayout.X_AXIS));
         imageAndSynopsis.setMaximumSize(new Dimension(1920, 500));
         imageAndSynopsis.setOpaque(true);
         imageAndSynopsis.setBackground(Color.RED);
 
+        // imageIcon
+
+        ImageIcon animeIcon = ImageRenderer.createImageIconByURL(anime.images.getJpg().largeImageUrl);
+
         JLabel imageAnime = new JLabel();
         imageAnime.setOpaque(true);
         imageAnime.setPreferredSize(new Dimension(450, 500));
         imageAnime.setMaximumSize(new Dimension(450, 1000));
-        imageAnime.setBackground(Color.GRAY);
+        imageAnime.setBackground(Color.decode("#333b48"));
+        imageAnime.setHorizontalAlignment(JLabel.CENTER);
+        imageAnime.setIcon(ImageRenderer.setImageIconSize(animeIcon, 450, 500));
         imageAnime.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
+        // the synopsis
         JLabel synopsis = new JLabel();
         synopsis.setOpaque(true);
         synopsis.setPreferredSize(new Dimension(1500, 500));
         synopsis.setMaximumSize(new Dimension(1500, 1000));
-        synopsis.setBackground(Color.magenta);
+        synopsis.setBackground(Color.decode("#333b48"));
+//        synopsis.setText(
+//                "<html>" +
+//                        "<p> There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.</p>"
+//                        +
+//                        "</html>"
+//        );
         synopsis.setText(
-                "<html>" +
-                        "<p> There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.</p>"
-                        +
-                        "</html>"
+                "<html>" + "<p>" + anime.synopsis + "</p>" + "</html>"
         );
         synopsis.setFont(new Font(Font.MONOSPACED, Font.TYPE1_FONT, 20));
         synopsis.setForeground(Color.WHITE);
@@ -97,12 +125,15 @@ public class AnimePage {
 //
 //
         imageAnime.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        // adding up into container
         imageAndSynopsis.add(imageAnime);
         imageAndSynopsis.add(synopsis);
 
+        // then adding up into another component
         contaienrDiv.add(imageAndSynopsis);
 
-        // below synopsis and image anime
+        // below synopsis and image anime or button adding up and substracting
 
         GridBagConstraints alignmentSection = new GridBagConstraints();
 
@@ -113,7 +144,7 @@ public class AnimePage {
         sectionUserInterface.setOpaque(true);
         sectionUserInterface.setPreferredSize(new Dimension(1920, 300));
         sectionUserInterface.setMaximumSize(new Dimension(1920, 300));
-        sectionUserInterface.setBackground(Color.CYAN);
+        sectionUserInterface.setBackground(Color.decode("#333b48"));
 
         JButton button = new JButton("Add To Collection");
         button.setOpaque(true);
@@ -172,8 +203,12 @@ public class AnimePage {
         alignmentSection.gridx = 4;
         sectionUserInterface.add(subtractAnime, alignmentSection);
 
-
+        // TODOS
+        // Buatlah sebuah button yang ketika add to list dan lain lain terhubung dengan database
+        // save changes akan menmapilkan notif either berhasil menyimpan atau sebaliknya
         button.addActionListener(e -> {
+            System.out.println(button.getText());
+
             System.out.println("difarina");
             statusComboBox.setVisible(true);
             episodeIndex.setVisible(true);
@@ -191,10 +226,21 @@ public class AnimePage {
         });
         contaienrDiv.add(sectionUserInterface);
 
+        Controller.navbar.search.addActionListener(e -> {
+            Controller.removeComponent(contaienrDiv);
+        });
 
-        frame.add(contaienrDiv);
-        frame.setVisible(true);
+        return  contaienrDiv;
+//        frame.add(contaienrDiv);
+//        frame.setVisible(true);
 
+    }
+
+    public void removeContainer() {
+        System.out.println("is it null = " + contaienrDiv == null + " s");
+//        Controller.removeComponent(contaienrDiv);
+//        contaienrDiv.removeAll();
+        Controller.removeComponent(contaienrDiv);
     }
 
     public static JPanel createKotak(String field, String value) {
@@ -228,4 +274,5 @@ public class AnimePage {
 
         return kotak;
     }
+
 }

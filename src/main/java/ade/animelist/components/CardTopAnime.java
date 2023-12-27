@@ -1,6 +1,7 @@
 package ade.animelist.components;
 
 import ade.animelist.api.JikanAPI;
+import ade.animelist.controller.Controller;
 import ade.animelist.util.ImageLoaderWorker;
 import ade.animelist.util.ImageRenderer;
 import net.sandrohc.jikan.exception.JikanQueryException;
@@ -87,6 +88,19 @@ public class CardTopAnime {
 
     public void addCard(String titleAnime, ImageIcon imgAnime, int id) {
 
+        if (titleAnime.length() > 40) {
+            String temp = "";
+            for (int i = 0; i < 40; i++) {
+                temp += titleAnime.charAt(i);
+            }
+
+            String titik = ".....";
+            temp = temp + titik;
+
+            titleAnime = temp;
+        }
+
+
         JPanel card = new JPanel();
         card.setPreferredSize(new Dimension(CARD_WIDTH, CARD_HEIGHT));
         card.setBackground(Color.decode("#333b48"));
@@ -124,6 +138,8 @@ public class CardTopAnime {
             normalY += 300;
         }
 
+        AnimePage animePage = new AnimePage();
+
         card.addMouseListener(
                 new MouseAdapter() {
                     @Override
@@ -132,9 +148,42 @@ public class CardTopAnime {
                         System.out.println("mama huhu");
                         System.out.println(title.getText());
 
+                        System.out.println(id);
+                        try {
+//                            Controller.navbar.getRecomendationAnimeDiv().removeAll();
+//                            Controller.navbar.getTopAnime().removeAll();
+                            Controller.navbar.syncDelete();
+                            Controller.navbar.removeRecomdendationCardComponent();
+                            Controller.navbar.removeTopCardComponent();
+                            Controller.navbar.bingung = 999;
+
+//                            Controller.navbar.getTopAnime().repaint();
+//                            Controller.navbar.getTopAnime().revalidate();
+//
+//                            Controller.navbar.getRecomendationAnimeDiv().repaint();
+//                            Controller.navbar.getRecomendationAnimeDiv().revalidate();
+
+                            Controller.addComponent(animePage.getAnimePageById(id));
+                            Controller.doScync();
+                        } catch (JikanQueryException ex) {
+                            throw new RuntimeException(ex);
+                        }
+
+
                     }
                 }
         );
+
+        Controller.navbar.logo.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                animePage.removeContainer();
+                System.out.println("mamama");
+//                Controller.navbar.addTopCardAnime();
+//                Controller.navbar.addRecomendationAnime();
+            }
+        });
 
     }
 }

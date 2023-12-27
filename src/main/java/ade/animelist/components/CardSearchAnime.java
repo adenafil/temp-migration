@@ -1,9 +1,13 @@
 package ade.animelist.components;
 
+import ade.animelist.controller.Controller;
+import net.sandrohc.jikan.exception.JikanQueryException;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.AttributedCharacterIterator;
 
 public class CardSearchAnime {
     private int indexAddUpAnime;
@@ -59,6 +63,18 @@ public class CardSearchAnime {
     public void addCard(String tileAnime, ImageIcon imgAnime, int id) {
         indexAddUpAnime++;
 
+        if (tileAnime.length() > 40) {
+            String temp = "";
+            for (int i = 0; i < 40; i++) {
+                temp += tileAnime.charAt(i);
+            }
+
+            String titik = ".....";
+            temp = temp + titik;
+
+            tileAnime = temp;
+        }
+
         JPanel card = new JPanel();
         card.setPreferredSize(new Dimension(CARD_WIDTH, CARD_HEIGHT));
         card.setBackground(Color.decode("#333b48"));
@@ -95,6 +111,8 @@ public class CardSearchAnime {
             normalY += 300;
         }
 
+        AnimePage animePage = new AnimePage();
+
         card.addMouseListener(
                 new MouseAdapter() {
                     @Override
@@ -103,10 +121,37 @@ public class CardSearchAnime {
                         System.out.println("mama huhu");
                         System.out.println(title.getText());
                         System.out.println(idAnime.getText());
+                        System.out.println(id);
+                        try {
+//                            Controller.navbar.getRecomendationAnimeDiv().removeAll();
+//                            Controller.navbar.getTopAnime().removeAll();
+                            Controller.navbar.syncDelete();
+                            Controller.navbar.bingung = 999;
+
+                            Controller.navbar.removeSearchAnimeCard();
+                            Controller.addComponent(animePage.getAnimePageById(id));
+                            Controller.doScync();
+
+                            Controller.doScync();
+                        } catch (JikanQueryException ex) {
+                            throw new RuntimeException(ex);
+                        }
 
                     }
                 }
         );
+
+        Controller.navbar.logo.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                animePage.removeContainer();
+                System.out.println("mamama");
+//                Controller.navbar.addTopCardAnime();
+//                Controller.navbar.addRecomendationAnime();
+            }
+        });
+
 
         cardPanel.revalidate();
         cardPanel.repaint();

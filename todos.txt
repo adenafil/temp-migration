@@ -18,6 +18,9 @@ the following text is what i have to do in my project;
 - handling error null exception (ONGOING);
 - add slides right and left(ONGOING)
 - Handling error connection and status 502 on api server
+- if user in condition searching anime and the result is null, handling that on frontend.
+- add hover on jlabel
+- add collection and todos
 
 
 // notes

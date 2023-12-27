@@ -1,14 +1,16 @@
 package ade.animelist.controller;
 
+import ade.animelist.components.AnimePage;
 import ade.animelist.components.CardSearchAnime;
 import ade.animelist.components.CardTopAnime;
 import ade.animelist.components.Navbar;
+import net.sandrohc.jikan.exception.JikanQueryException;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class Controller {
-    private static Navbar navbar = new Navbar();
+    public static Navbar navbar = new Navbar();
     public static JFrame frame =  new JFrame();
 
     public static void run() {
@@ -26,7 +28,13 @@ public class Controller {
         addComponent(navbar.getNavbar());
         navbar.addTopCardAnime();
         navbar.addRecomendationAnime();
-//        navbar.addHomeAnime();
+//        try {
+//            AnimePage animePage = new AnimePage();
+//            addComponent(animePage.getAnimePageById(20));
+//        } catch (JikanQueryException e) {
+//            e.printStackTrace();
+//        }
+////        navbar.addHomeAnime();
 
 //        CardSearchAnime searchAnime = new CardSearchAnime();
 //        CardTopAnime cardTopAnime = new CardTopAnime();
@@ -49,8 +57,15 @@ public class Controller {
     }
 
     public static void removeComponent(JPanel div) {
-        frame.remove(div);
-        frame.setVisible(true);
+        if (div != null) {
+            frame.remove(div);
+            frame.setVisible(true);
+            frame.repaint();
+            frame.revalidate();
+        }
+    }
+
+    public static void doScync() {
         frame.repaint();
         frame.revalidate();
     }
