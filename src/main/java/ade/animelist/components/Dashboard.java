@@ -1,5 +1,8 @@
 package ade.animelist.components;
 
+import ade.animelist.controller.Controller;
+import ade.animelist.util.ImageRenderer;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -83,6 +86,20 @@ public class Dashboard {
         myCollectionBtn.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 35));
         myCollectionBtn.setBorder(BorderFactory.createEmptyBorder());
         myCollectionBtn.setFocusable(false);
+
+        myCollectionBtn.addActionListener(e -> {
+            dashboardDiv.removeAll();
+            Controller.removeComponent(dashboardDiv);
+            JPanel card = CardCollection.getCard();
+
+            for (int i = 0; i < 20; i++) {
+                ImageIcon imgTes = ImageRenderer.createImageIconByURL("https://cdn.myanimelist.net/images/anime/13/17405.jpg");
+                CardCollection.addCard("naruto", imgTes, 20);
+            }
+
+            Controller.addComponent(card);
+
+        });
 
         JButton signOutBtn = new JButton("Sign Out");
         signOutBtn.setOpaque(true);

@@ -21,6 +21,7 @@ the following text is what i have to do in my project;
 - if user in condition searching anime and the result is null, handling that on frontend.
 - add hover on jlabel
 - add collection and todos
+- fix card collection
 
 
 // notes

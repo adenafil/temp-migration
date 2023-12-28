@@ -12,22 +12,12 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 
 public class AnimePage {
-    static Navbar navbar = new Navbar();
-    static JFrame frame =  new JFrame();
 
     public JPanel contaienrDiv = null;
 
     public JPanel getAnimePageById(int id) throws JikanQueryException {
         // anime
         Anime anime = JikanAPI.getAnimeById(id);
-
-        // Jframe
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-//        frame.setSize(new Dimension(1920, 1080));
-//        frame.getContentPane().setBackground(Color.ORANGE);
-//        frame.setResizable(false);
-//        frame.add(navbar.getNavbar());
 
         // container di bawah navbar
         contaienrDiv = new JPanel();
@@ -217,9 +207,6 @@ public class AnimePage {
 
             button.setText("Save Changes");
 
-            // Repaint
-            frame.revalidate();
-            frame.repaint();
 
             addAnime.setVisible(true);
 
@@ -238,8 +225,6 @@ public class AnimePage {
 
     public void removeContainer() {
         System.out.println("is it null = " + contaienrDiv == null + " s");
-//        Controller.removeComponent(contaienrDiv);
-//        contaienrDiv.removeAll();
         Controller.removeComponent(contaienrDiv);
     }
 

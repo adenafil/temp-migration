@@ -1,20 +1,22 @@
 package ade.animelist.components;
 
-import ade.animelist.api.JikanAPI;
 import ade.animelist.controller.Controller;
-import ade.animelist.util.ImageLoaderWorker;
-import ade.animelist.util.ImageRenderer;
 import net.sandrohc.jikan.exception.JikanQueryException;
-import reactor.core.scheduler.Schedulers;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class CardTopAnime {
-    JPanel cardPanel;
-    public AnimePage animePage = new AnimePage();
+public class CardCollection {
+    private static int indexAddUpAnime;
+
+    public static AnimePage animePage = new AnimePage();
+
+    public static JPanel cardPanel  = new JPanel();
+    public static JPanel panel = new JPanel();
+
+
 
     private static final int CARD_WIDTH = 300;
     private static final int CARD_HEIGHT = 400;
@@ -22,17 +24,16 @@ public class CardTopAnime {
     private static int index = 0;
     // will up constantly when index ==4 do 20 + 300;
     private static int normalY = 20;
-    JPanel panel = new JPanel();
+
+    public static JPanel getCard() {
+        Controller.navbar.bingung = 6767;
 
 
-    public JPanel getCard() {
-
-        cardPanel = new JPanel();
         cardPanel.setLayout(new GridBagLayout());
 
 
         JScrollPane scrollPane = new JScrollPane(cardPanel);
-        scrollPane.setPreferredSize(new Dimension(1920, 400));
+        scrollPane.setPreferredSize(new Dimension(1920, 940));
         scrollPane.setOpaque(true);
         scrollPane.getViewport().getView().setBackground(Color.decode("#333b48"));
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
@@ -45,7 +46,7 @@ public class CardTopAnime {
 //        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 //        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-        JLabel topAnime = new JLabel("Top Anime");
+        JLabel topAnime = new JLabel("My Collection");
         topAnime.setOpaque(true);
         topAnime.setBackground(Color.decode("#333b48"));
         topAnime.setForeground(Color.WHITE);
@@ -54,7 +55,7 @@ public class CardTopAnime {
         topAnime.setAlignmentX(JLabel.LEFT);
 
         panel.add(topAnime);
-        panel.setPreferredSize(new Dimension(1920, 500));
+        panel.setPreferredSize(new Dimension(1920, 940));
         panel.setBackground(Color.decode("#333b48"));
         panel.setLayout(new FlowLayout());
 //        panel.setLayout(null);
@@ -62,46 +63,23 @@ public class CardTopAnime {
         panel.add(scrollPane);
         panel.setBorder(BorderFactory.createEmptyBorder());
 
-//        try {
-//            JikanAPI.getTopAnime()
-//                    .subscribeOn(Schedulers.parallel())
-//                    .subscribe(
-//                            animeList -> {
-//                                ImageLoaderWorker imageLoaderWorker = new ImageLoaderWorker(animeList);
-//                                imageLoaderWorker.execute();
-//                                animeList.forEach(bayor -> addCard(bayor.title, ImageRenderer.setImageIconSize(ImageRenderer.createImageIconByURL(bayor.images.getJpg().largeImageUrl), 450, 450), bayor.malId));
-//                            },
-//                            throwable -> {
-//                                System.out.println("error : " + throwable.getMessage());
-//                            }
-//                    );
-//        } catch (JikanQueryException ex) {
-//            throw new RuntimeException(ex);
-//        }
-//
-
-
         return panel;
     }
 
-    public void removePanel() {
-        this.cardPanel.removeAll();
-    }
+    public static void addCard(String tileAnime, ImageIcon imgAnime, int id) {
+        indexAddUpAnime++;
 
-    public void addCard(String titleAnime, ImageIcon imgAnime, int id) {
-
-        if (titleAnime.length() > 40) {
+        if (tileAnime.length() > 40) {
             String temp = "";
             for (int i = 0; i < 40; i++) {
-                temp += titleAnime.charAt(i);
+                temp += tileAnime.charAt(i);
             }
 
             String titik = ".....";
             temp = temp + titik;
 
-            titleAnime = temp;
+            tileAnime = temp;
         }
-
 
         JPanel card = new JPanel();
         card.setPreferredSize(new Dimension(CARD_WIDTH, CARD_HEIGHT));
@@ -112,14 +90,19 @@ public class CardTopAnime {
         img.setPreferredSize(new Dimension(CARD_WIDTH, CARD_HEIGHT - 100));
         img.setBackground(Color.gray);
         img.setIcon(imgAnime);
+        img.setVerticalAlignment(SwingConstants.CENTER);
+        img.setHorizontalAlignment(SwingConstants.CENTER);
 
-        JLabel title = new JLabel("<html><p> " + titleAnime +"</p></html>");
+        JLabel title = new JLabel("<html><p> " + tileAnime + " </p></html>");
         title.setOpaque(true);
         title.setPreferredSize(new Dimension(CARD_WIDTH, 60));
         title.setForeground(Color.WHITE);
         title.setBackground(Color.decode("#333b48"));
         title.setHorizontalAlignment(SwingConstants.CENTER);
         title.setFont(new Font(Font.SERIF, Font.BOLD, 22));
+
+        JLabel idAnime = new JLabel(id + "");
+        idAnime.setFont(new Font(null, Font.BOLD, 0));
 
         card.add(img);
         card.add(title);
@@ -129,10 +112,6 @@ public class CardTopAnime {
         gbc.gridy = normalY;
         gbc.insets = new Insets(10, 10, 10, 10);
         cardPanel.add(card, gbc);
-
-        JLabel idAnime = new JLabel(id + "");
-        idAnime.setFont(new Font(null, Font.BOLD, 0));
-
 
         index++;
         if (index > 4) {
@@ -148,44 +127,67 @@ public class CardTopAnime {
                         super.mouseClicked(e);
                         System.out.println("mama huhu");
                         System.out.println(title.getText());
-
+                        System.out.println(idAnime.getText());
                         System.out.println(id);
                         try {
 //                            Controller.navbar.getRecomendationAnimeDiv().removeAll();
 //                            Controller.navbar.getTopAnime().removeAll();
+
+                            // PR
                             Controller.navbar.syncDelete();
-                            Controller.navbar.removeRecomdendationCardComponent();
-                            Controller.navbar.removeTopCardComponent();
-                            Controller.navbar.bingung = 999;
+                            Controller.navbar.bingung = 33221;
 
-//                            Controller.navbar.getTopAnime().repaint();
-//                            Controller.navbar.getTopAnime().revalidate();
-//
-//                            Controller.navbar.getRecomendationAnimeDiv().repaint();
-//                            Controller.navbar.getRecomendationAnimeDiv().revalidate();
+                            Controller.removeComponent(panel);
 
+
+
+//                            Controller.navbar.removeSearchAnimeCard();
                             Controller.addComponent(animePage.getAnimePageById(id));
+                            Controller.doScync();
+
                             Controller.doScync();
                         } catch (JikanQueryException ex) {
                             throw new RuntimeException(ex);
                         }
 
-
                     }
                 }
         );
 
-        Controller.navbar.logo.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                animePage.removeContainer();
-                System.out.println("mamama");
-//                Controller.navbar.addTopCardAnime();
-//                Controller.navbar.addRecomendationAnime();
-            }
-        });
+//        Controller.navbar.logo.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                super.mouseClicked(e);
+//                animePage.removeContainer();
+//                System.out.println("mamama");
+////                Controller.navbar.addTopCardAnime();
+////                Controller.navbar.addRecomendationAnime();
+//            }
+//        });
+//
 
+        cardPanel.revalidate();
+        cardPanel.repaint();
     }
-}
 
+    public static int getIndexAddUpAnime() {
+        return indexAddUpAnime;
+    }
+
+    public static void setIndexAddUpAnime(int indexAddUpAnimee) {
+        indexAddUpAnime = indexAddUpAnimee;
+    }
+
+    public static void removeData() {
+        if (indexAddUpAnime > 0) {
+            cardPanel.removeAll();
+        }
+        setIndexAddUpAnime(0);
+    }
+
+    public static void setIndex(int indexx) {
+        index = indexx;
+    }
+
+
+}

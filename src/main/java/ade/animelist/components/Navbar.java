@@ -106,6 +106,20 @@ public class Navbar extends JFrame {
                     cardSearchAnime.animePage.removeContainer();
                 }
 
+                if (CardCollection.cardPanel != null) {
+                    System.out.println("HEllo");
+                    Controller.removeComponent(CardCollection.panel);
+                    CardCollection.cardPanel.removeAll();
+                    CardCollection.panel.removeAll();
+
+                }
+
+                if (CardCollection.animePage.contaienrDiv != null) {
+                    System.out.println("IFELSE");
+                    Controller.removeComponent(CardCollection.animePage.contaienrDiv);
+                    CardCollection.animePage.contaienrDiv.removeAll();
+                }
+
 
 
                 Controller.addComponent(Dashboard.getDashboard());
@@ -138,12 +152,27 @@ public class Navbar extends JFrame {
                 System.out.println(cardRecomendationAnime.refresh);
 
 
-                if (bingung == 0) {
+                if (topAnimeDiv != null) {
+                    System.out.println("mamamam nenene" + topAnimeDiv != null);
                     recomendationAnimeDiv.removeAll();
                     removeRecomdendationCardComponent();
 
+                    topAnimeDiv.removeAll();
+                    removeTopCardComponent();
+
+                    topAnimeDiv = cardTopAnime.getCard();
+
                     recomendationAnimeDiv = cardRecomendationAnime.getCard();
                     addRecomendationAnime();
+                }
+
+                if (bingung == 33221 && CardCollection.animePage != null) {
+                    System.out.println("MEssi");
+                    Controller.removeComponent(CardCollection.animePage.contaienrDiv);
+                    CardCollection.animePage.contaienrDiv.removeAll();
+//                    addTopCardAnime();
+                    addRecomendationAnime();
+                    bingung = 0;
                 }
 
                 if (bingung < 100) {
@@ -170,6 +199,16 @@ public class Navbar extends JFrame {
                     bingung = 0;
                 }
 
+                if (bingung == 6767) {
+                    System.out.println("HEllo");
+                    Controller.removeComponent(CardCollection.panel);
+                    CardCollection.cardPanel.removeAll();
+                    CardCollection.panel.removeAll();
+                    addTopCardAnime();
+                    addRecomendationAnime();
+                    bingung = 0;
+                }
+
             }
         });
 
@@ -186,6 +225,11 @@ public class Navbar extends JFrame {
 
                 removeTopCardComponent();
                 removeRecomdendationCardComponent();
+            }
+
+            if (CardCollection.cardPanel != null && CardCollection.panel != null) {
+                Controller.removeComponent(CardCollection.panel);
+                CardCollection.panel.removeAll();
             }
 
             if (Dashboard.dashboardDiv != null) {
