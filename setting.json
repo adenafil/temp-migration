@@ -1,0 +1,10 @@
+{
+  "fhd": {
+    "widthMonitor": 1920,
+    "heightMonitor": 1080
+  },
+  "hd": {
+    "widthMonitor": 1366,
+    "heightMonitor": 768
+  }
+}

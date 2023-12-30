@@ -1,9 +1,6 @@
 package ade.animelist.controller;
 
-import ade.animelist.components.AnimePage;
-import ade.animelist.components.CardSearchAnime;
-import ade.animelist.components.CardTopAnime;
-import ade.animelist.components.Navbar;
+import ade.animelist.components.*;
 import net.sandrohc.jikan.exception.JikanQueryException;
 
 import javax.swing.*;
@@ -24,10 +21,11 @@ public class Controller {
         frame.setSize(1920, 1080);
         frame.getContentPane().setBackground(Color.ORANGE);
         frame.setResizable(false);
+        createLogin();
 
-        addComponent(navbar.getNavbar());
-        navbar.addTopCardAnime();
-        navbar.addRecomendationAnime();
+//        addComponent(navbar.getNavbar());
+//        navbar.addTopCardAnime();
+//        navbar.addRecomendationAnime();
 //        try {
 //            AnimePage animePage = new AnimePage();
 //            addComponent(animePage.getAnimePageById(20));
@@ -55,6 +53,42 @@ public class Controller {
         frame.repaint();
         frame.revalidate();
     }
+
+    public static void createAdeAnimeList() {
+        addComponent(navbar.getNavbar());
+        navbar.addTopCardAnime();
+        navbar.addRecomendationAnime();
+    }
+
+    public static void removeSignUp() {
+        SignUp.container.removeAll();
+        removeComponent(SignUp.container);
+    }
+
+    public static void createSignUp() {
+        addComponent(SignUp.getSignUp());
+    }
+
+    public static void removeLogin() {
+        Login.container.removeAll();
+        removeComponent(Login.container);
+    }
+
+    public static void createLogin() {
+        addComponent(Login.getLogin());
+    }
+
+    public static void createDasshboard() {
+        addComponent(navbar.getNavbar());
+        Dashboard.isOpened = true;
+        addComponent(Dashboard.getDashboard());
+    }
+
+    public static void removeDashboard() {
+        Dashboard.dashboardDiv.removeAll();
+        removeComponent(Dashboard.dashboardDiv);
+    }
+
 
     public static void removeComponent(JPanel div) {
         if (div != null) {

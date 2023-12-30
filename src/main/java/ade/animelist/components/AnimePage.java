@@ -12,10 +12,10 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 
 public class AnimePage {
+    public static boolean isOpened = false;
+    public static JPanel contaienrDiv = null;
 
-    public JPanel contaienrDiv = null;
-
-    public JPanel getAnimePageById(int id) throws JikanQueryException {
+    public static JPanel getAnimePageById(int id) throws JikanQueryException {
         // anime
         Anime anime = JikanAPI.getAnimeById(id);
 
@@ -213,9 +213,9 @@ public class AnimePage {
         });
         contaienrDiv.add(sectionUserInterface);
 
-        Controller.navbar.search.addActionListener(e -> {
-            Controller.removeComponent(contaienrDiv);
-        });
+//        Controller.navbar.search.addActionListener(e -> {
+//            Controller.removeComponent(contaienrDiv);
+//        });
 
         return  contaienrDiv;
 //        frame.add(contaienrDiv);
@@ -223,7 +223,7 @@ public class AnimePage {
 
     }
 
-    public void removeContainer() {
+    public static void removeContainer() {
         System.out.println("is it null = " + contaienrDiv == null + " s");
         Controller.removeComponent(contaienrDiv);
     }

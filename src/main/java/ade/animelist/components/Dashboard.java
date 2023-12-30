@@ -1,6 +1,8 @@
 package ade.animelist.components;
 
 import ade.animelist.controller.Controller;
+import ade.animelist.database.repository.ConfigRepository;
+import ade.animelist.database.repository.ConfigRepositoryImpl;
 import ade.animelist.util.ImageRenderer;
 
 import javax.swing.*;
@@ -8,8 +10,9 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class Dashboard {
-    static JPanel dashboardDiv = new JPanel();
-
+    public static JPanel dashboardDiv = new JPanel();
+    private static ConfigRepository configRepository = new ConfigRepositoryImpl();
+    public static boolean isOpened = false;
     public static JPanel getDashboard() {
         dashboardDiv.setOpaque(true);
         dashboardDiv.setPreferredSize(new Dimension(1920, 980));
@@ -34,7 +37,7 @@ public class Dashboard {
         containerName.setMaximumSize(new Dimension(1920, 100));
         containerName.setBackground(Color.decode("#333b48"));
 
-        JLabel name = new JLabel("Welcome, Dea Aprizal");
+        JLabel name = new JLabel("Welcome, @" + configRepository.getCurrentUsername());
         name.setForeground(Color.WHITE);
         name.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 60));
 
@@ -53,13 +56,13 @@ public class Dashboard {
         profile.setOpaque(true);
         profile.setPreferredSize(new Dimension(350, 350));
         profile.setMaximumSize(new Dimension(350, 350));
-        profile.setBackground(Color.decode("#" + getHexaColor("Ade Nafil Firmansah")));
+        profile.setBackground(Color.decode("#" + getHexaColor(configRepository.getCurrentUsername())));
 
-        JLabel textIfProfileNotExist = new JLabel("D");
+        JLabel textIfProfileNotExist = new JLabel(configRepository.getCurrentUsername().toUpperCase().charAt(0) + "");
         textIfProfileNotExist.setOpaque(true);
         textIfProfileNotExist.setPreferredSize(new Dimension(350, 350));
         textIfProfileNotExist.setMaximumSize(new Dimension(350, 350));
-        textIfProfileNotExist.setBackground(Color.decode("#" + getHexaColor("Ade Nafil Firmansah")));
+        textIfProfileNotExist.setBackground(Color.decode("#" + getHexaColor(configRepository.getCurrentUsername())));
         textIfProfileNotExist.setFont(new Font(Font.SERIF, Font.BOLD, 250));
         textIfProfileNotExist.setVerticalAlignment(SwingConstants.CENTER);
         textIfProfileNotExist.setHorizontalAlignment(SwingConstants.CENTER);
@@ -88,9 +91,14 @@ public class Dashboard {
         myCollectionBtn.setFocusable(false);
 
         myCollectionBtn.addActionListener(e -> {
+            Dashboard.isOpened = false;
+            CardCollection.isOpened = true;
             dashboardDiv.removeAll();
             Controller.removeComponent(dashboardDiv);
+
             JPanel card = CardCollection.getCard();
+
+
 
             for (int i = 0; i < 20; i++) {
                 ImageIcon imgTes = ImageRenderer.createImageIconByURL("https://cdn.myanimelist.net/images/anime/13/17405.jpg");

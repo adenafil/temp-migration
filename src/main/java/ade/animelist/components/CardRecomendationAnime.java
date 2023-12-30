@@ -10,9 +10,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class CardRecomendationAnime {
+    public boolean isOpened = false;
     JPanel cardPanel;
 
-    AnimePage animePage = new AnimePage();
+//    AnimePage animePage = new AnimePage();
     private static final int CARD_WIDTH = 300;
     private static final int CARD_HEIGHT = 400;
     private static int[] x = {0, 350, 700, 1050, 1400};
@@ -114,7 +115,7 @@ public class CardRecomendationAnime {
         }
 
 
-        System.out.println("debug : " + x[index]);
+//        System.out.println("debug : " + x[index]);
 
         JPanel card = new JPanel();
         card.setPreferredSize(new Dimension(CARD_WIDTH, CARD_HEIGHT));
@@ -166,9 +167,9 @@ public class CardRecomendationAnime {
                             Controller.navbar.syncDelete();
                             Controller.navbar.removeRecomdendationCardComponent();
                             Controller.navbar.removeTopCardComponent();
-                            Controller.navbar.bingung = 999;
-
-                            Controller.addComponent(animePage.getAnimePageById(id));
+                            AnimePage.isOpened = true;
+                            isOpened = false;
+                            Controller.addComponent(AnimePage.getAnimePageById(id));
                             Controller.doScync();
                         } catch (JikanQueryException ex) {
                             throw new RuntimeException(ex);
@@ -178,16 +179,20 @@ public class CardRecomendationAnime {
                 }
         );
 
-        Controller.navbar.logo.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                animePage.removeContainer();
-                System.out.println("mamama");
-//                Controller.navbar.addTopCardAnime();
-//                Controller.navbar.addRecomendationAnime();
-            }
-        });
+//        Controller.navbar.logo.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                if (animePage.contaienrDiv != null) {
+//                    super.mouseClicked(e);
+//                    animePage.removeContainer();
+//                    System.out.println("log in CardRecomendation");
+//                    cardPanel.revalidate();
+//                    cardPanel.repaint();
+//                }
+////                Controller.navbar.addTopCardAnime();
+////                Controller.navbar.addRecomendationAnime();
+//            }
+//        });
 
 
     }

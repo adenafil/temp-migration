@@ -10,9 +10,10 @@ import java.awt.event.MouseEvent;
 import java.text.AttributedCharacterIterator;
 
 public class CardSearchAnime {
+    public boolean isOpened = false;
     private int indexAddUpAnime;
 
-    public AnimePage animePage = new AnimePage();
+//    public AnimePage animePage = new AnimePage();
 
     JPanel cardPanel;
     private final int CARD_WIDTH = 300;
@@ -128,10 +129,10 @@ public class CardSearchAnime {
 //                            Controller.navbar.getRecomendationAnimeDiv().removeAll();
 //                            Controller.navbar.getTopAnime().removeAll();
                             Controller.navbar.syncDelete();
-                            Controller.navbar.bingung = 999;
-
+                            AnimePage.isOpened = true;
+                            isOpened = false;
                             Controller.navbar.removeSearchAnimeCard();
-                            Controller.addComponent(animePage.getAnimePageById(id));
+                            Controller.addComponent(AnimePage.getAnimePageById(id));
                             Controller.doScync();
 
                             Controller.doScync();
@@ -143,20 +144,20 @@ public class CardSearchAnime {
                 }
         );
 
-        Controller.navbar.logo.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                animePage.removeContainer();
-                System.out.println("mamama");
-//                Controller.navbar.addTopCardAnime();
-//                Controller.navbar.addRecomendationAnime();
-            }
-        });
-
-
-        cardPanel.revalidate();
-        cardPanel.repaint();
+//        Controller.navbar.logo.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                if (animePage.contaienrDiv != null) {
+//                    super.mouseClicked(e);
+//                    animePage.removeContainer();
+//                    System.out.println("log in card search Anime");
+//                    cardPanel.revalidate();
+//                    cardPanel.repaint();
+//                }
+////                Controller.navbar.addTopCardAnime();
+////                Controller.navbar.addRecomendationAnime();
+//            }
+//        });
     }
 
     public int getIndexAddUpAnime() {

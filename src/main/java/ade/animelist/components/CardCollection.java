@@ -9,11 +9,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class CardCollection {
+    public static boolean isOpened = false;
     private static int indexAddUpAnime;
 
-    public static AnimePage animePage = new AnimePage();
+//    public static AnimePage animePage = new AnimePage();
 
-    public static JPanel cardPanel  = new JPanel();
+    public static JPanel cardPanel;
     public static JPanel panel = new JPanel();
 
 
@@ -26,6 +27,7 @@ public class CardCollection {
     private static int normalY = 20;
 
     public static JPanel getCard() {
+        cardPanel = new JPanel();
         Controller.navbar.bingung = 6767;
 
 
@@ -135,14 +137,13 @@ public class CardCollection {
 
                             // PR
                             Controller.navbar.syncDelete();
-                            Controller.navbar.bingung = 33221;
 
                             Controller.removeComponent(panel);
 
-
-
+                            AnimePage.isOpened = true;
+                            isOpened = false;
 //                            Controller.navbar.removeSearchAnimeCard();
-                            Controller.addComponent(animePage.getAnimePageById(id));
+                            Controller.addComponent(AnimePage.getAnimePageById(id));
                             Controller.doScync();
 
                             Controller.doScync();

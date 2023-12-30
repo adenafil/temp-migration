@@ -13,8 +13,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class CardTopAnime {
+    public boolean isOpened = false;
     JPanel cardPanel;
-    public AnimePage animePage = new AnimePage();
+//    public AnimePage animePage = new AnimePage();
 
     private static final int CARD_WIDTH = 300;
     private static final int CARD_HEIGHT = 400;
@@ -156,15 +157,15 @@ public class CardTopAnime {
                             Controller.navbar.syncDelete();
                             Controller.navbar.removeRecomdendationCardComponent();
                             Controller.navbar.removeTopCardComponent();
-                            Controller.navbar.bingung = 999;
-
+                            AnimePage.isOpened = true;
+                            isOpened = false;
 //                            Controller.navbar.getTopAnime().repaint();
 //                            Controller.navbar.getTopAnime().revalidate();
 //
 //                            Controller.navbar.getRecomendationAnimeDiv().repaint();
 //                            Controller.navbar.getRecomendationAnimeDiv().revalidate();
 
-                            Controller.addComponent(animePage.getAnimePageById(id));
+                            Controller.addComponent(AnimePage.getAnimePageById(id));
                             Controller.doScync();
                         } catch (JikanQueryException ex) {
                             throw new RuntimeException(ex);
@@ -175,16 +176,18 @@ public class CardTopAnime {
                 }
         );
 
-        Controller.navbar.logo.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                animePage.removeContainer();
-                System.out.println("mamama");
-//                Controller.navbar.addTopCardAnime();
-//                Controller.navbar.addRecomendationAnime();
-            }
-        });
+//        Controller.navbar.logo.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                super.mouseClicked(e);
+//                if (animePage.contaienrDiv != null) {
+//                    animePage.removeContainer();
+//                    System.out.println("log : it is supposed to in animePage, need to be checked");
+//                }
+////                Controller.navbar.addTopCardAnime();
+////                Controller.navbar.addRecomendationAnime();
+ //           }
+ //       });
 
     }
 }
