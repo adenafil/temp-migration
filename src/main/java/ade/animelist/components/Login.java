@@ -3,6 +3,7 @@ package ade.animelist.components;
 import ade.animelist.controller.Controller;
 import ade.animelist.database.repository.LoginRepository;
 import ade.animelist.database.repository.LoginRepositoryImpl;
+import ade.animelist.util.ImageRenderer;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -187,7 +188,10 @@ public class Login {
                 System.out.println("Login success 200");
                 Controller.removeLogin();
                 Controller.createDasshboard();
-                Controller.navbar.bingung = 3939;
+                ImageRenderer.runConfig();
+            } else {
+                JOptionPane.showMessageDialog(null, "Username Atau Password Anda Salah", "Informasi", JOptionPane.INFORMATION_MESSAGE);
+                System.out.println("Gagal login");
             }
 
 

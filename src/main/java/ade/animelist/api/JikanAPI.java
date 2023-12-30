@@ -1,5 +1,8 @@
 package ade.animelist.api;
 
+import ade.animelist.database.DatabaseConnection;
+import ade.animelist.database.repository.ConfigRepository;
+import ade.animelist.database.repository.ConfigRepositoryImpl;
 import ade.animelist.util.ImageRenderer;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -17,12 +20,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class JikanAPI {
     // an api object from library -> https://github.com/SandroHc/reactive-jikan
@@ -200,7 +209,6 @@ public class JikanAPI {
      * @throws JikanQueryException
      */
     public static Anime getAnimeById(int id) throws JikanQueryException {
-//        jikan = new Jikan();
         return jikan.query().anime().get(id).execute().block();
     }
 
@@ -250,9 +258,61 @@ public class JikanAPI {
                 .collectList();
     }
 
+    public static CompletableFuture<Anime> getAnimeByIdAsync(int id) {
+        CompletableFuture<Anime> future = new CompletableFuture<>();
 
+        CompletableFuture.runAsync(() -> {
+            try {
+                Anime anime = jikan.query().anime().get(id).execute().block();
+                future.complete(anime);
+            } catch (JikanQueryException e) {
+                future.completeExceptionally(e);
+            }
+        });
 
+        return future;
+    }
 
+//    public static List<CompletableFuture<Anime>> getAllAnimeListUserAsync() {
+//        List<CompletableFuture<Anime>> result = new ArrayList<>();
+//
+//        try (Connection connection = DatabaseConnection.getDataSource().getConnection()) {
+//            ConfigRepository configRepository = new ConfigRepositoryImpl();
+//            String sql = "select * from user_animelist where id_user = ?";
+//            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+//            preparedStatement.setInt(1, configRepository.getCurrentUserId());
+//
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//
+//            while (resultSet.next()) {
+//                int animeId = resultSet.getInt("id_animeapi");
+//                CompletableFuture<Anime> animeFuture = CompletableFuture
+//                        .supplyAsync(() -> JikanAPI.getAnimeByIdAsync(animeId))
+//                        .thenCompose(Function.identity()); // Flatten the CompletableFuture
+//                result.add(animeFuture);
+//            }
+//
+//        } catch (SQLException e) {
+//            System.out.println(e.getMessage());
+//        }
+//
+//        return result;
+//    }
+
+    public static List<Anime> joinAllAsyncResults(List<CompletableFuture<Anime>> futures) {
+        CompletableFuture<Void> allOf = CompletableFuture.allOf(
+                futures.toArray(new CompletableFuture[0]));
+
+        try {
+            allOf.get(); // Wait for all to complete
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+
+        return futures.stream()
+                .map(CompletableFuture::join)
+                .collect(Collectors.toList());
+    }
 
 
 

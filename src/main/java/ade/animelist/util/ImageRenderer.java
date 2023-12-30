@@ -1,5 +1,9 @@
 package ade.animelist.util;
 
+import ade.animelist.database.repository.AddAnimeToDbRepository;
+import ade.animelist.database.repository.AddAnimeToDbRepositoryImpl;
+import net.sandrohc.jikan.model.anime.Anime;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -7,7 +11,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -132,6 +138,16 @@ public class ImageRenderer extends DefaultTableCellRenderer {
         }
     }
 
+    public static ImageIcon getCacheImageForCollectionPage(String imageUrl) {
+        ImageIcon cachedImageIcon = imageCache.get(imageUrl);
+
+        if (cachedImageIcon != null) {
+            return cachedImageIcon;
+        }
+
+        return null;
+    }
+
     public static ImageIcon createImageIconByUrl(String imageUrl) {
         ImageIcon cachedImageIcon = imageCache.get(imageUrl);
 
@@ -177,6 +193,17 @@ public class ImageRenderer extends DefaultTableCellRenderer {
         Image resizedImage = image.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
 
         return new ImageIcon(resizedImage);
+    }
+
+    public static void runConfig() {
+        CompletableFuture.runAsync(() -> {
+            AddAnimeToDbRepository addAnimeToDbRepository = new AddAnimeToDbRepositoryImpl();
+            ImageLoaderWorker imageLoaderWorker = new ImageLoaderWorker(addAnimeToDbRepository.getAllAnimeListUser());
+            imageLoaderWorker.execute();
+        }).exceptionally(ex -> {
+            ex.printStackTrace(); // Handle exceptions
+            return null;
+        });
     }
 
 

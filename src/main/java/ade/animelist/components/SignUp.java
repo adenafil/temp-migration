@@ -1,6 +1,10 @@
 package ade.animelist.components;
 
 import ade.animelist.controller.Controller;
+import ade.animelist.database.entity.User;
+import ade.animelist.database.repository.SignUpRepository;
+import ade.animelist.database.repository.SignUpRepositoryImpl;
+import ade.animelist.util.ImageRenderer;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -176,6 +180,23 @@ public class SignUp {
             if (textPasswordField.getText().isBlank()) {
                 JOptionPane.showMessageDialog(null, "Password Tidak Boleh Kosong", "Informasi", JOptionPane.INFORMATION_MESSAGE);
                 return;
+            }
+
+            if (!(textFieldUsername.getText().isBlank() && textPasswordField.getText().isBlank())) {
+                SignUpRepository signUpRepository = new SignUpRepositoryImpl();
+                User user = new User(textFieldUsername.getText(), textPasswordField.getText());
+                boolean isValid = signUpRepository.insert(user);
+
+                if (isValid) {
+                    JOptionPane.showMessageDialog(null, "Akun Berhasil Dibuat", "Informasi", JOptionPane.INFORMATION_MESSAGE);
+                    Controller.removeSignUp();
+                    Controller.createDasshboard();
+//                    ImageRenderer.runConfig();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Akun Gagal Dibuat Karena Username dengan nama" +
+                            " " + user.getUsername() + " sudah ada" , "Informasi", JOptionPane.INFORMATION_MESSAGE);
+                }
+
             }
 
 

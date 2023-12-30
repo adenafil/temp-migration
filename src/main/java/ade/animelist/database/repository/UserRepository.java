@@ -1,5 +1,7 @@
 package ade.animelist.database.repository;
 
 public interface UserRepository {
-    String getIdUser();
+    boolean updateUsername(String newUsername);
+    boolean updatePassword(String updatePassword);
+    boolean updateProfilePath(String newPath);
 }

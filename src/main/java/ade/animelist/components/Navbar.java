@@ -1,6 +1,8 @@
 package ade.animelist.components;
 import ade.animelist.api.JikanAPI;
 import ade.animelist.controller.Controller;
+import ade.animelist.database.repository.AddAnimeToDbRepository;
+import ade.animelist.database.repository.AddAnimeToDbRepositoryImpl;
 import ade.animelist.util.ImageLoaderWorker;
 import ade.animelist.util.ImageRenderer;
 import net.sandrohc.jikan.exception.JikanQueryException;
@@ -168,6 +170,37 @@ public class Navbar extends JFrame {
                 System.out.println("difarina");
             }
         });
+
+        CardCollection.refresh.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                CardCollection.panel.removeAll();
+                Controller.removeComponent(CardCollection.panel);
+
+                CardCollection.panel = CardCollection.getCard();
+
+                AddAnimeToDbRepository listAnimeuser = new AddAnimeToDbRepositoryImpl();
+                ImageLoaderWorker imageLoaderWorker = new ImageLoaderWorker(listAnimeuser.getAllAnimeListUser());
+                imageLoaderWorker.execute();
+                listAnimeuser.getAllAnimeListUser().forEach(
+                        luAsikBang -> {
+                            ImageIcon ade = ImageRenderer.getCacheImageForCollectionPage(luAsikBang.images.getJpg().largeImageUrl) != null ? ImageRenderer.getCacheImageForCollectionPage(luAsikBang.images.getJpg().largeImageUrl) : null;
+                            System.out.println("is image null ? " + ade);
+                            CardCollection.addCard(
+                                    luAsikBang.title,
+                                    ade,
+                                    luAsikBang.malId
+                            );
+                        }
+                );
+                Controller.addComponent(CardCollection.panel);
+                CardCollection.setIndex(0);
+
+                System.out.println("difarina");
+            }
+        });
+
 
         // listener logo
         logo.addMouseListener(new MouseAdapter() {

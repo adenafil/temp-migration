@@ -1,14 +1,26 @@
 package ade.animelist.controller;
 
 import ade.animelist.components.*;
+import ade.animelist.database.repository.AddAnimeToDbRepository;
+import ade.animelist.database.repository.AddAnimeToDbRepositoryImpl;
+import ade.animelist.util.ImageLoaderWorker;
+import ade.animelist.util.ImageRenderer;
 import net.sandrohc.jikan.exception.JikanQueryException;
+import net.sandrohc.jikan.model.anime.Anime;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class Controller {
     public static Navbar navbar = new Navbar();
     public static JFrame frame =  new JFrame();
+
+//    static {
+//        ImageRenderer.runConfig();
+//    }
+
 
     public static void run() {
         SwingUtilities.invokeLater(Controller::createAndShowGUI);

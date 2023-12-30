@@ -2,6 +2,10 @@ package ade.animelist.components;
 
 import ade.animelist.api.JikanAPI;
 import ade.animelist.controller.Controller;
+import ade.animelist.database.repository.AddAnimeToDbRepository;
+import ade.animelist.database.repository.AddAnimeToDbRepositoryImpl;
+import ade.animelist.database.repository.ConfigRepository;
+import ade.animelist.database.repository.ConfigRepositoryImpl;
 import ade.animelist.util.ImageRenderer;
 import net.sandrohc.jikan.exception.JikanQueryException;
 import net.sandrohc.jikan.model.anime.Anime;
@@ -18,6 +22,9 @@ public class AnimePage {
     public static JPanel getAnimePageById(int id) throws JikanQueryException {
         // anime
         Anime anime = JikanAPI.getAnimeById(id);
+        AddAnimeToDbRepository addAnimeToDbRepository = new AddAnimeToDbRepositoryImpl();
+        boolean didThisAnimeExistInDatabase = addAnimeToDbRepository.doesThisAnimeExistInDatabase(id);
+        ConfigRepository configRepository = new ConfigRepositoryImpl();
 
         // container di bawah navbar
         contaienrDiv = new JPanel();
@@ -26,6 +33,14 @@ public class AnimePage {
 //        contaienrDiv.setLayout(new FlowLayout(FlowLayout.LEADING, -8, 0));
         contaienrDiv.setPreferredSize(new Dimension(1920, 1000));
         contaienrDiv.setBackground(Color.decode("#333b48"));
+
+        JPanel pelengkapBg = new JPanel();
+        pelengkapBg.setOpaque(true);
+        pelengkapBg.setPreferredSize(new Dimension(1920, 50));
+        pelengkapBg.setMaximumSize(new Dimension(1920, 50));
+        pelengkapBg.setBackground(Color.decode("#333b48"));
+
+        contaienrDiv.add(pelengkapBg);
 
         // buat judul
         JLabel judul = new JLabel(anime.title);
@@ -132,17 +147,19 @@ public class AnimePage {
         JPanel sectionUserInterface = new JPanel();
         sectionUserInterface.setLayout(new GridBagLayout());
         sectionUserInterface.setOpaque(true);
-        sectionUserInterface.setPreferredSize(new Dimension(1920, 300));
-        sectionUserInterface.setMaximumSize(new Dimension(1920, 300));
+        sectionUserInterface.setPreferredSize(new Dimension(1920, 80));
+        sectionUserInterface.setMaximumSize(new Dimension(1920, 80));
         sectionUserInterface.setBackground(Color.decode("#333b48"));
 
-        JButton button = new JButton("Add To Collection");
+        // button add to collection
+        JButton button = new JButton();
         button.setOpaque(true);
         button.setPreferredSize(new Dimension(180, 40));
         button.setBackground(Color.ORANGE);
         button.setBorder(BorderFactory.createEmptyBorder());
         button.setFocusPainted(false);
         button.setFont(new Font(Font.MONOSPACED, Font.BOLD, 14));
+        button.setVisible(false);
 
         alignmentSection.gridx = 0;
         sectionUserInterface.add(button, alignmentSection);
@@ -151,11 +168,29 @@ public class AnimePage {
         JComboBox<String> statusComboBox = new JComboBox<>(statusOptions);
         statusComboBox.setVisible(false);
 
+        if (didThisAnimeExistInDatabase) {
+            if (addAnimeToDbRepository.getStatusByMalId(id).equals("WATCHING")) {
+                statusComboBox.setSelectedIndex(0);
+            }
+            if (addAnimeToDbRepository.getStatusByMalId(id).equals("COMPLETED")) {
+                statusComboBox.setSelectedIndex(1);
+            }
+            if (addAnimeToDbRepository.getStatusByMalId(id).equals("PLAN TO WATCH")) {
+                statusComboBox.setSelectedIndex(2);
+            }
+            if (addAnimeToDbRepository.getStatusByMalId(id).equals("DROPPED")) {
+                statusComboBox.setSelectedIndex(3);
+            }
+        }
+
         alignmentSection.gridx = 1;
         sectionUserInterface.add(statusComboBox, alignmentSection);
 
 
         JLabel episodeIndex = new JLabel("Your Progress Episode On : 1");
+
+        episodeIndex.setText("Your Progress Episode On : " + addAnimeToDbRepository.getCurrentEpsByMalId(id));
+
         episodeIndex.setOpaque(true);
         episodeIndex.setPreferredSize(new Dimension(200, 40));
         episodeIndex.setBorder(new LineBorder(Color.WHITE, 1));
@@ -177,6 +212,13 @@ public class AnimePage {
         addAnime.setFont(new Font(Font.MONOSPACED, Font.BOLD, 14));
         addAnime.setVisible(false);
 
+        addAnime.addActionListener(e-> {
+            int currentEps = getDigitInThisText(episodeIndex.getText());
+            if (currentEps <= anime.episodes - 1) {
+                episodeIndex.setText("Your Progress Episode On : " + ++currentEps);
+            }
+        });
+
         alignmentSection.gridx = 3;
         sectionUserInterface.add(addAnime, alignmentSection);
 
@@ -190,27 +232,84 @@ public class AnimePage {
         subtractAnime.setFont(new Font(Font.MONOSPACED, Font.BOLD, 14));
         subtractAnime.setVisible(false);
 
+        subtractAnime.addActionListener(e-> {
+            int currentEps = getDigitInThisText(episodeIndex.getText());
+            if (0 < currentEps - 1) {
+                episodeIndex.setText("Your Progress Episode On : " + --currentEps);
+            }
+        });
+
+
         alignmentSection.gridx = 4;
         sectionUserInterface.add(subtractAnime, alignmentSection);
+
 
         // TODOS
         // Buatlah sebuah button yang ketika add to list dan lain lain terhubung dengan database
         // save changes akan menmapilkan notif either berhasil menyimpan atau sebaliknya
-        button.addActionListener(e -> {
-            System.out.println(button.getText());
 
-            System.out.println("difarina");
+
+        if (addAnimeToDbRepository.doesThisAnimeExistInDatabase(id)) {
+            System.out.println("check where " + didThisAnimeExistInDatabase);
+            button.setText("Save Changes");
             statusComboBox.setVisible(true);
             episodeIndex.setVisible(true);
             addAnime.setVisible(true);
             subtractAnime.setVisible(true);
-
-            button.setText("Save Changes");
-
-
             addAnime.setVisible(true);
+            button.setVisible(true);
 
+        } else {
+            System.out.println("add to collection");
+            button.setText("Add To Collection");
+            button.setVisible(true);
+            button.addActionListener(e -> {
+                System.out.println(button.getText());
+
+                System.out.println("difarina");
+                statusComboBox.setVisible(true);
+                episodeIndex.setVisible(true);
+                addAnime.setVisible(true);
+                subtractAnime.setVisible(true);
+
+                button.setText("Save Changes");
+                System.out.println("status : " + statusComboBox.getSelectedItem().toString());
+
+                addAnime.setVisible(true);
+
+            });
+        }
+
+        button.addActionListener(e -> {
+            // save ke database
+            if (addAnimeToDbRepository.doesThisAnimeExistInDatabase(id)) {
+                boolean didSuccessToAddInDatabase = addAnimeToDbRepository.addProgressWatchingAnime(
+                        configRepository.getCurrentUserId(),
+                        anime.malId,
+                        statusComboBox.getSelectedItem().toString(),
+                        getDigitInThisText(episodeIndex.getText())
+                );
+
+
+                if (didSuccessToAddInDatabase) JOptionPane.showMessageDialog(null, "Berhasil Menyimpan", "Informasi", JOptionPane.INFORMATION_MESSAGE);
+                else JOptionPane.showMessageDialog(null, "Gagal Menyimpan", "Informasi", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                boolean didSuccessToAddInDatabase = addAnimeToDbRepository.add(
+                        configRepository.getCurrentUserId(),
+                        id,
+                        statusComboBox.getSelectedItem().toString(),
+                        1,
+                        anime.episodes,
+                        anime.title
+                );
+
+                episodeIndex.setText("Your Progress Episode On : " + addAnimeToDbRepository.getCurrentEpsByMalId(id));
+                if (didSuccessToAddInDatabase) JOptionPane.showMessageDialog(null, "Berhasil Menambahkan Anime Ke Database", "Informasi", JOptionPane.INFORMATION_MESSAGE);
+                else JOptionPane.showMessageDialog(null, "Gagal Menambahkan Anime Ke Database", "Informasi", JOptionPane.INFORMATION_MESSAGE);
+            }
         });
+
+
         contaienrDiv.add(sectionUserInterface);
 
 //        Controller.navbar.search.addActionListener(e -> {
@@ -258,6 +357,19 @@ public class AnimePage {
 
 
         return kotak;
+    }
+
+    public static int getDigitInThisText(String text) {
+        String digit = "";
+        char[] chars = text.toCharArray();
+
+        for (char searchDigit : chars) {
+            if (Character.isDigit(searchDigit)) {
+                digit += "" + searchDigit;
+            }
+        }
+
+        return Integer.parseInt(digit);
     }
 
 }

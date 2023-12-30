@@ -1,8 +1,11 @@
 package ade.animelist.components;
 
 import ade.animelist.controller.Controller;
+import ade.animelist.database.repository.AddAnimeToDbRepository;
+import ade.animelist.database.repository.AddAnimeToDbRepositoryImpl;
 import ade.animelist.database.repository.ConfigRepository;
 import ade.animelist.database.repository.ConfigRepositoryImpl;
+import ade.animelist.util.ImageLoaderWorker;
 import ade.animelist.util.ImageRenderer;
 
 import javax.swing.*;
@@ -10,6 +13,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class Dashboard {
+    private static int indexListenerCollection = 0;
     public static JPanel dashboardDiv = new JPanel();
     private static ConfigRepository configRepository = new ConfigRepositoryImpl();
     public static boolean isOpened = false;
@@ -99,15 +103,106 @@ public class Dashboard {
             JPanel card = CardCollection.getCard();
 
 
+            AddAnimeToDbRepository listAnimeuser = new AddAnimeToDbRepositoryImpl();
 
-            for (int i = 0; i < 20; i++) {
-                ImageIcon imgTes = ImageRenderer.createImageIconByURL("https://cdn.myanimelist.net/images/anime/13/17405.jpg");
-                CardCollection.addCard("naruto", imgTes, 20);
+
+            if (indexListenerCollection  == 0) {
+                listAnimeuser.getAllAnimeListInDatabaseUser().forEach(
+                        maguire -> {
+                            CardCollection.addCard(
+                                    maguire.title,
+                                    null,
+                                    maguire.malId
+                            );
+                        }
+                );
             }
+//            else {
+//                listAnimeuser.getAllAnimeListUser().forEach(
+//                        luAsikBang -> {
+//                            ImageIcon ade = ImageRenderer.getCacheImageForCollectionPage(luAsikBang.images.getJpg().largeImageUrl) != null ? ImageRenderer.getCacheImageForCollectionPage(luAsikBang.images.getJpg().largeImageUrl) : null;
+//                            System.out.println("is image null ? " + ade);
+//                            CardCollection.addCard(
+//                                    luAsikBang.title,
+//                                    ade,
+//                                    luAsikBang.malId
+//                            );
+//                        }
+//                );
+//            }
 
+
+            CardCollection.setIndex(0);
+////            for (int i = 0; i < 20; i++) {
+////                ImageIcon imgTes = ImageRenderer.createImageIconByURL("https://cdn.myanimelist.net/images/anime/13/17405.jpg");
+////                CardCollection.addCard("naruto", imgTes, 20);
+////            }
+//
             Controller.addComponent(card);
+//
+//            CardCollection.setIndex(0);
+            SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+
+                @Override
+                protected Void doInBackground() throws Exception {
+                    ImageLoaderWorker imageLoaderWorker = new ImageLoaderWorker(listAnimeuser.getAllAnimeListUser());
+                    imageLoaderWorker.execute();
+
+                    listAnimeuser.getAllAnimeListUser().forEach(
+                            luAsikBang -> {
+//                                CardCollection.addCard(
+//                                        luAsikBang.title,
+                                        ImageRenderer.createImageIconByURL(luAsikBang.images.getJpg().largeImageUrl);
+//                                        luAsikBang.malId
+//                                );
+                            }
+                    );
+
+                    if (indexListenerCollection == 0) {
+                        indexListenerCollection++;
+                    } else {
+                        listAnimeuser.getAllAnimeListUser().forEach(
+                                luAsikBang -> {
+                                CardCollection.addCard(
+                                        luAsikBang.title,
+                                    ImageRenderer.createImageIconByURL(luAsikBang.images.getJpg().largeImageUrl),
+                                        luAsikBang.malId
+                                );
+                                }
+                        );
+                        Controller.addComponent(card);
+                    }
+
+                    CardCollection.setIndex(0);
+
+                    Thread.sleep(5000);
+
+                    return null;
+                }
+//
+//                @Override
+//                protected void done() {
+////                    JOptionPane.showMessageDialog(null, "Image Renderer is successful", "Informasi", JOptionPane.INFORMATION_MESSAGE);
+//                    CardCollection.cardPanel.removeAll();
+//                    CardCollection.cardPanel = new JPanel();
+//                    listAnimeuser.getAllAnimeListUser().forEach(
+//                            luAsikBang -> {
+//                                CardCollection.addCard(
+//                                        luAsikBang.title,
+//                                ImageRenderer.createImageIconByURL(luAsikBang.images.getJpg().largeImageUrl),
+//                                        luAsikBang.malId
+//                                );
+//                            }
+//                    );
+//
+//                }
+            };
+
+            worker.execute();
+
 
         });
+
 
         JButton signOutBtn = new JButton("Sign Out");
         signOutBtn.setOpaque(true);

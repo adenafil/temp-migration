@@ -1,6 +1,7 @@
 package ade.animelist.components;
 
 import ade.animelist.controller.Controller;
+import ade.animelist.util.ImageRenderer;
 import net.sandrohc.jikan.exception.JikanQueryException;
 
 import javax.swing.*;
@@ -16,26 +17,36 @@ public class CardCollection {
 
     public static JPanel cardPanel;
     public static JPanel panel = new JPanel();
-
-
-
     private static final int CARD_WIDTH = 300;
     private static final int CARD_HEIGHT = 400;
     private static int[] x = {0, 350, 700, 1050, 1400};
     private static int index = 0;
     // will up constantly when index ==4 do 20 + 300;
-    private static int normalY = 20;
+    private static int normalY = 0;
+    static ImageIcon refreshImg = ImageRenderer.setImageIconSize(ImageRenderer.createImageIconByURL("https://img.icons8.com/ios-filled/50/ffffff/refresh--v1.png"), 20, 20);
+    public static JLabel refresh = new JLabel("refresh");
+
+    public static JLabel getLabelRefresh() {
+//        refresh = new JLabel("refresh");
+        refresh.setOpaque(true);
+        refresh.setBackground(Color.decode("#333b48"));
+        refresh.setForeground(Color.WHITE);
+        refresh.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
+        refresh.setPreferredSize(new Dimension(1600, 30));
+        refresh.setAlignmentX(JLabel.LEFT);
+        refresh.setIcon(refreshImg);
+
+        return refresh;
+    }
+
 
     public static JPanel getCard() {
         cardPanel = new JPanel();
-        Controller.navbar.bingung = 6767;
-
-
         cardPanel.setLayout(new GridBagLayout());
 
 
         JScrollPane scrollPane = new JScrollPane(cardPanel);
-        scrollPane.setPreferredSize(new Dimension(1920, 940));
+        scrollPane.setPreferredSize(new Dimension(1920, 840));
         scrollPane.setOpaque(true);
         scrollPane.getViewport().getView().setBackground(Color.decode("#333b48"));
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
@@ -57,9 +68,11 @@ public class CardCollection {
         topAnime.setAlignmentX(JLabel.LEFT);
 
         panel.add(topAnime);
+        panel.add(getLabelRefresh());
         panel.setPreferredSize(new Dimension(1920, 940));
         panel.setBackground(Color.decode("#333b48"));
         panel.setLayout(new FlowLayout());
+//        panel.setBackground(Color.PINK);
 //        panel.setLayout(null);
 //        panel.setBounds(20, 20, 1000, 1000);
         panel.add(scrollPane);
@@ -139,6 +152,7 @@ public class CardCollection {
                             Controller.navbar.syncDelete();
 
                             Controller.removeComponent(panel);
+                            panel.removeAll();
 
                             AnimePage.isOpened = true;
                             isOpened = false;
