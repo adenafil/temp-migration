@@ -1,4 +1,5 @@
 import ade.animelist.api.JikanAPI;
+import ade.animelist.components.Setting;
 import ade.animelist.database.DatabaseConnection;
 import ade.animelist.database.entity.User;
 import ade.animelist.database.repository.*;
@@ -132,4 +133,26 @@ public class TestDatabase {
         boolean result = userRepository.updateProfilePath("C:/Users/acern/Downloads/ade.jpg");
         System.out.println("log " + result);
     }
+
+    @Test
+    void testSetting() {
+        SettingRepository settingRepository = new SettingRepositoryImpl();
+        boolean result = settingRepository.update("mama", "1234", "C:/Users/acern/Downloads/ade.jpg");
+        System.out.println("log " + result);
+    }
+
+    @Test
+    void getCurrentUsername() {
+        SettingRepository settingRepository = new SettingRepositoryImpl();
+        String result = settingRepository.getPassword();
+        System.out.println("log " + result);
+    }
+
+    @Test
+    void getCurrentPath() {
+        SettingRepository settingRepository = new SettingRepositoryImpl();
+        String result = settingRepository.getPath();
+        System.out.println("log " + result);
+    }
+
 }
